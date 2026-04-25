@@ -1,209 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="google-site-verification" content="8Zrguc3EHXMbYg20P7UwIGef2ZH6ZlMLqM8OLIOiW3Y" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic-Tac-Toe: Ultimate Edition</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" id="meta-theme" content="#3498db">
+    <meta name="google-site-verification" content="8Zrguc3EHXMbYg20P7UwIGef2ZH6ZlMLqM8OLIOiW3Y" />
+    <title>Pro Tic Tac Toe - AI Levels</title>
     <style>
-        /* THEME VARIABLES */
-        :root {
-            --bg: #1a1a1a;
-            --card: #2d2d2d;
-            --accent: #3498db;
-            --text: #ffffff;
-            --status: #f1c40f;
-        }
-
-        /* LIGHT MODE OVERRIDES */
-        [data-theme="light"] {
-            --bg: #f0f2f5;
-            --card: #ffffff;
-            --accent: #2980b9;
-            --text: #1a1a1a;
-            --status: #d35400;
-        }
-
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            text-align: center; 
-            background-color: var(--bg); 
-            color: var(--text); 
-            padding: 20px; 
-            transition: background-color 0.3s, color 0.3s;
-        }
-        
-        /* THEME TOGGLE BUTTON */
-        .theme-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--card);
-            color: var(--text);
-            border: 1px solid var(--accent);
-            padding: 8px;
-            border-radius: 50%;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0); opacity: 0; }
-            80% { transform: scale(1.2); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        @keyframes winner {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); color: var(--status); }
-        }
-
-        .score-board { display: inline-flex; gap: 20px; background: var(--card); padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--accent); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .board { display: grid; grid-template-columns: repeat(3, 90px); gap: 10px; justify-content: center; margin: 20px auto; }
-        .cell { width: 90px; height: 90px; background-color: var(--card); font-size: 2.5rem; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .pop { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .win-anim { animation: winner 0.5s ease infinite; }
-        button.main-btn { background: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: 5px; font-weight: bold; cursor: pointer; margin: 10px; }
-        #status { color: var(--status); font-weight: bold; height: 1.5em; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; background-color: #121212; color: white; }
+        h1 { margin-top: 20px; color: #00d4ff; }
+        .controls { margin: 20px; text-align: center; background: #1e1e1e; padding: 15px; border-radius: 10px; }
+        .board { display: grid; grid-template-columns: repeat(3, 100px); grid-gap: 10px; margin-top: 20px; }
+        .cell { width: 100px; height: 100px; background-color: #2a2a2a; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .cell:hover { background-color: #383838; }
+        .cell.taken { cursor: not-allowed; }
+        .status { margin-top: 20px; font-size: 1.2rem; height: 30px; }
+        button { padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #00d4ff; border: none; border-radius: 5px; color: black; font-weight: bold; margin-top: 20px; }
+        input[type=range] { width: 200px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <button class="theme-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">🌓</button>
+    <h1>Tic Tac Toe AI</h1>
 
-    <h1>Tic-Tac-Toe</h1>
-
-    <div class="score-board">
-        <div>You: <span id="scoreX">0</span></div>
-        <div>AI: <span id="scoreO">0</span></div>
+    <div class="controls">
+        <label>Difficulty: Level <span id="levelDisplay">50</span></label><br>
+        <input type="range" id="levelSlider" min="1" max="100" value="50" oninput="updateLevel(this.value)">
+        <p style="font-size: 0.8rem; color: #888;">Level 100 is Unbeatable</p>
     </div>
 
-    <h2 id="status">Your Turn!</h2>
-    
     <div class="board" id="board">
-        <div class="cell" onclick="handleHumanMove(0)"></div>
-        <div class="cell" onclick="handleHumanMove(1)"></div>
-        <div class="cell" onclick="handleHumanMove(2)"></div>
-        <div class="cell" onclick="handleHumanMove(3)"></div>
-        <div class="cell" onclick="handleHumanMove(4)"></div>
-        <div class="cell" onclick="handleHumanMove(5)"></div>
-        <div class="cell" onclick="handleHumanMove(6)"></div>
-        <div class="cell" onclick="handleHumanMove(7)"></div>
-        <div class="cell" onclick="handleHumanMove(8)"></div>
+        <div class="cell" onclick="makeMove(0)"></div>
+        <div class="cell" onclick="makeMove(1)"></div>
+        <div class="cell" onclick="makeMove(2)"></div>
+        <div class="cell" onclick="makeMove(3)"></div>
+        <div class="cell" onclick="makeMove(4)"></div>
+        <div class="cell" onclick="makeMove(5)"></div>
+        <div class="cell" onclick="makeMove(6)"></div>
+        <div class="cell" onclick="makeMove(7)"></div>
+        <div class="cell" onclick="makeMove(8)"></div>
     </div>
 
-    <button class="main-btn" onclick="resetGame()">Restart Match</button>
+    <div class="status" id="status">Your turn (X)</div>
+    <button onclick="resetGame()">Reset Game</button>
 
     <script>
-        // --- THEME LOGIC ---
-        function toggleTheme() {
-            const currentTheme = document.body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('ttt_theme', newTheme);
-            
-            // Update browser status bar color
-            document.getElementById('meta-theme').setAttribute('content', newTheme === 'light' ? '#2980b9' : '#3498db');
-        }
-
-        // Apply saved theme on load
-        const savedTheme = localStorage.getItem('ttt_theme') || 'dark';
-        document.body.setAttribute('data-theme', savedTheme);
-
-        // --- AUDIO ENGINE ---
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playSound(type) {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            if (type === 'click') {
-                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
-            } else if (type === 'win') {
-                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.5);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.5);
-            }
-        }
-
-        // --- GAME LOGIC ---
-        let board = ["", "", "", "", "", "", "", "", ""];
+        let board = ['', '', '', '', '', '', '', '', ''];
         let gameActive = true;
-        let scoreX = localStorage.getItem('ttt_ai_scoreX') || 0;
-        let scoreO = localStorage.getItem('ttt_ai_scoreO') || 0;
-        document.getElementById("scoreX").innerText = scoreX;
-        document.getElementById("scoreO").innerText = scoreO;
+        let difficulty = 50;
+        const player = 'X';
+        const ai = 'O';
 
-        const cells = document.querySelectorAll(".cell");
-        const statusDisplay = document.getElementById("status");
+        const scores = { 'X': -10, 'O': 10, 'tie': 0 };
 
-        function handleHumanMove(index) {
-            if (board[index] !== "" || !gameActive) return;
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            playSound('click');
-            makeMove(index, "X");
-            if (gameActive) {
-                statusDisplay.innerText = "AI is thinking...";
-                setTimeout(computerMove, 600);
+        function updateLevel(val) {
+            difficulty = val;
+            document.getElementById('levelDisplay').innerText = val;
+        }
+
+        function makeMove(index) {
+            if (board[index] === '' && gameActive) {
+                board[index] = player;
+                updateBoard();
+                if (!checkGameOver()) {
+                    document.getElementById('status').innerText = "AI is thinking...";
+                    setTimeout(aiMove, 500);
+                }
             }
         }
 
-        function computerMove() {
+        function aiMove() {
             if (!gameActive) return;
-            let availableMoves = [];
-            board.forEach((val, i) => { if (val === "") availableMoves.push(i); });
-            if (availableMoves.length > 0) {
-                const rnd = availableMoves[Math.floor(Math.random() * availableMoves.length)];
-                playSound('click');
-                makeMove(rnd, "O");
+
+            let move;
+            let rand = Math.random() * 100;
+
+            if (rand < difficulty) {
+                // Use Minimax for "Smart" move
+                move = getBestMove();
+            } else {
+                // Use Random for "Mistake"
+                let available = board.map((val, idx) => val === '' ? idx : null).filter(val => val !== null);
+                move = available[Math.floor(Math.random() * available.length)];
+            }
+
+            board[move] = ai;
+            updateBoard();
+            checkGameOver();
+            if (gameActive) document.getElementById('status').innerText = "Your turn (X)";
+        }
+
+        function getBestMove() {
+            let bestScore = -Infinity;
+            let move;
+            for (let i = 0; i < 9; i++) {
+                if (board[i] === '') {
+                    board[i] = ai;
+                    let score = minimax(board, 0, false);
+                    board[i] = '';
+                    if (score > bestScore) {
+                        bestScore = score;
+                        move = i;
+                    }
+                }
+            }
+            return move;
+        }
+
+        function minimax(board, depth, isMaximizing) {
+            let result = checkWinnerRaw();
+            if (result !== null) return scores[result];
+
+            if (isMaximizing) {
+                let bestScore = -Infinity;
+                for (let i = 0; i < 9; i++) {
+                    if (board[i] === '') {
+                        board[i] = ai;
+                        let score = minimax(board, depth + 1, false);
+                        board[i] = '';
+                        bestScore = Math.max(score, bestScore);
+                    }
+                }
+                return bestScore;
+            } else {
+                let bestScore = Infinity;
+                for (let i = 0; i < 9; i++) {
+                    if (board[i] === '') {
+                        board[i] = player;
+                        let score = minimax(board, depth + 1, true);
+                        board[i] = '';
+                        bestScore = Math.min(score, bestScore);
+                    }
+                }
+                return bestScore;
             }
         }
 
-        function makeMove(index, player) {
-            board[index] = player;
-            cells[index].innerText = player;
-            cells[index].classList.add("pop");
-            checkWin(player);
-        }
-
-        function checkWin(player) {
-            const winPatterns = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-            let winPattern = winPatterns.find(p => p.every(i => board[i] === player));
-
-            if (winPattern) {
-                statusDisplay.innerText = player === "X" ? "You Win! 🎉" : "AI Wins! 🤖";
-                playSound('win');
-                winPattern.forEach(i => cells[i].classList.add("win-anim"));
-                saveScore(player);
-                gameActive = false;
-            } else if (!board.includes("")) {
-                statusDisplay.innerText = "Draw! 🤝";
-                gameActive = false;
-            } else if (player === "O") {
-                statusDisplay.innerText = "Your Turn!";
+        function checkWinnerRaw() {
+            const winPatterns = [
+                [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]
+            ];
+            for (let p of winPatterns) {
+                if (board[p[0]] && board[p[0]] === board[p[1]] && board[p[0]] === board[p[2]]) return board[p[0]];
             }
+            if (!board.includes('')) return 'tie';
+            return null;
         }
 
-        function saveScore(winner) {
-            if (winner === "X") { scoreX++; localStorage.setItem('ttt_ai_scoreX', scoreX); } 
-            else { scoreO++; localStorage.setItem('ttt_ai_scoreO', scoreO); }
-            document.getElementById("scoreX").innerText = scoreX;
-            document.getElementById("scoreO").innerText = scoreO;
+        function checkGameOver() {
+            let result = checkWinnerRaw();
+            if (result) {
+                gameActive = false;
+                if (result === 'tie') {
+                    document.getElementById('status').innerText = "It's a Tie!";
+                } else {
+                    document.getElementById('status').innerText = result === 'X' ? "You Won!" : "AI Won!";
+                }
+                return true;
+            }
+            return false;
+        }
+
+        function updateBoard() {
+            const cells = document.getElementsByClassName('cell');
+            for (let i = 0; i < 9; i++) {
+                cells[i].innerText = board[i];
+                if (board[i] !== '') cells[i].classList.add('taken');
+            }
         }
 
         function resetGame() {
-            board = Array(9).fill("");
+            board = ['', '', '', '', '', '', '', '', ''];
             gameActive = true;
-            statusDisplay.innerText = "Your Turn!";
-            cells.forEach(c => { c.innerText = ""; c.classList.remove("pop", "win-anim"); });
+            document.getElementById('status').innerText = "Your turn (X)";
+            const cells = document.getElementsByClassName('cell');
+            for (let cell of cells) {
+                cell.innerText = '';
+                cell.classList.remove('taken');
+            }
         }
-
-        if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('sw.js')); }
     </script>
 </body>
 </html>
