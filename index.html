@@ -3,251 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberTic: Level Master</title>
+    <title>ByteFix Tic-Tac-Toe Pro</title>
     
     <meta name="google-adsense-account" content="ca-pub-2021454167052270">
     <meta name="google-site-verification" content="8Zrguc3EHXMbYg20P7UwIGef2ZH6ZlMLqM8OLIOiW3Y" />
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2021454167052270" crossorigin="anonymous"></script>
 
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" id="meta-theme" content="#3498db">
+    
     <style>
-        :root {
-            --bg: #0a0a12;
-            --card: #161625;
-            --accent: #00f2ff;
-            --player-x: #ff007b;
-            --player-o: #00f2ff; 
-            --text: #ffffff;
-            --xp-bar: #39ff14;
-        }
-
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        /* LEVEL SELECTOR STYLES */
-        .level-picker {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin: 20px 0;
-            background: var(--card);
-            padding: 10px 25px;
-            border-radius: 50px;
-            border: 2px solid var(--accent);
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
-        }
-
-        .nav-btn {
-            background: none;
-            border: none;
-            color: var(--accent);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: 0.2s;
-            padding: 0 10px;
-            margin: 0;
-        }
-
-        .nav-btn:disabled { color: #444; cursor: not-allowed; }
-        .nav-btn:hover:not(:disabled) { transform: scale(1.3); text-shadow: 0 0 10px var(--accent); }
-
-        #levelNum { font-size: 2rem; font-weight: bold; min-width: 60px; text-align: center; }
-
-        /* PROGRESS & STATS */
-        .xp-container { width: 300px; height: 8px; background: #222; border-radius: 4px; margin-bottom: 20px; }
-        .xp-fill { height: 100%; width: 1%; background: var(--xp-bar); box-shadow: 0 0 10px var(--xp-bar); transition: 0.5s; }
-
-        .stats { display: flex; gap: 15px; margin-bottom: 20px; }
-        .stat-item { background: var(--card); padding: 5px 15px; border-radius: 8px; border: 1px solid #333; font-size: 0.8rem; }
-
-        /* THE BOARD */
-        .board { display: grid; grid-template-columns: repeat(3, 90px); gap: 10px; }
-        .cell {
-            width: 90px; height: 90px; background: var(--card); border: 1px solid #333;
-            border-radius: 12px; font-size: 2.5rem; display: flex; align-items: center;
-            justify-content: center; cursor: pointer; transition: 0.2s;
-        }
-        .cell:hover { border-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
-        .cell.x { color: var(--player-x); text-shadow: 0 0 10px var(--player-x); }
-        .cell.o { color: var(--player-o); text-shadow: 0 0 10px var(--player-o); }
-        .winner-cell { animation: pulse 0.6s infinite; border-color: var(--xp-bar) !important; }
-        @keyframes pulse { 50% { filter: brightness(1.5); transform: scale(1.05); } }
-
-        .controls { margin-top: 30px; display: flex; gap: 10px; }
-        .btn {
-            padding: 10px 20px; background: transparent; color: var(--text);
-            border: 1px solid var(--text); border-radius: 5px; cursor: pointer; font-weight: bold;
-        }
-        .btn-primary { border-color: var(--accent); color: var(--accent); }
-        .btn:hover { background: rgba(255,255,255,0.1); }
+        :root { --bg: #1a1a1a; --card: #2d2d2d; --accent: #3498db; --text: #ffffff; --status: #f1c40f; }
+        [data-theme="light"] { --bg: #f0f2f5; --card: #ffffff; --accent: #2980b9; --text: #1a1a1a; --status: #d35400; }
+        
+        body { font-family: 'Segoe UI', sans-serif; text-align: center; background-color: var(--bg); color: var(--text); padding: 20px; transition: 0.3s; }
+        .theme-btn { position: absolute; top: 10px; right: 10px; background: var(--card); color: var(--text); border: 1px solid var(--accent); border-radius: 50%; width: 40px; height: 40px; cursor: pointer; }
+        
+        .score-board { display: inline-flex; gap: 20px; background: var(--card); padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--accent); }
+        .level-badge { color: var(--accent); font-weight: bold; display: block; margin-bottom: 5px; }
+        
+        .board { display: grid; grid-template-columns: repeat(3, 90px); gap: 10px; justify-content: center; margin: 20px auto; }
+        .cell { width: 90px; height: 90px; background-color: var(--card); font-size: 2.5rem; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        
+        @keyframes popIn { 0% { transform: scale(0); } 80% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .pop { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .win-anim { animation: winner 0.5s ease infinite; }
+        @keyframes winner { 50% { transform: translateY(-5px); color: var(--status); } }
+        
+        button.main-btn { background: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        #status { color: var(--status); height: 1.5em; }
     </style>
 </head>
-<body>
+<body data-theme="dark">
 
-    <h1 style="letter-spacing: 3px; text-shadow: 0 0 10px var(--accent);">CYBERTIC</h1>
+    <button class="theme-btn" onclick="toggleTheme()">🌓</button>
 
-    <div class="level-picker">
-        <button class="nav-btn" onclick="changeLevel(-1)" id="prevBtn">◂</button>
-        <div>
-            <span style="display:block; font-size: 0.6rem; color: var(--accent); text-align: center;">LEVEL</span>
-            <span id="levelNum">1</span>
-        </div>
-        <button class="nav-btn" onclick="changeLevel(1)" id="nextBtn">▸</button>
+    <h1>Tic-Tac-Toe Evolution</h1>
+
+    <div class="score-board">
+        <div><span class="level-badge">LEVEL</span><span id="levelDisplay">1</span></div>
+        <div><span class="level-badge">YOU (X)</span><span id="scoreX">0</span></div>
+        <div><span class="level-badge">AI (O)</span><span id="scoreO">0</span></div>
     </div>
 
-    <div class="xp-container">
-        <div class="xp-fill" id="xpBar"></div>
-    </div>
-
-    <div class="stats">
-        <div class="stat-item">Wins: <span id="scoreX">0</span></div>
-        <div class="stat-item">CPU: <span id="scoreO">0</span></div>
-        <div class="stat-item">AI Power: <span id="diffPerc">1%</span></div>
-    </div>
-
-    <p id="status" style="height: 20px; font-weight: bold; color: var(--accent);">READY PLAYER ONE</p>
-
+    <h2 id="status">Your Turn!</h2>
+    
     <div class="board" id="board">
-        <div class="cell" onclick="handleMove(0)"></div>
-        <div class="cell" onclick="handleMove(1)"></div>
-        <div class="cell" onclick="handleMove(2)"></div>
-        <div class="cell" onclick="handleMove(3)"></div>
-        <div class="cell" onclick="handleMove(4)"></div>
-        <div class="cell" onclick="handleMove(5)"></div>
-        <div class="cell" onclick="handleMove(6)"></div>
-        <div class="cell" onclick="handleMove(7)"></div>
-        <div class="cell" onclick="handleMove(8)"></div>
+        <div class="cell" onclick="handleHumanMove(0)"></div>
+        <div class="cell" onclick="handleHumanMove(1)"></div>
+        <div class="cell" onclick="handleHumanMove(2)"></div>
+        <div class="cell" onclick="handleHumanMove(3)"></div>
+        <div class="cell" onclick="handleHumanMove(4)"></div>
+        <div class="cell" onclick="handleHumanMove(5)"></div>
+        <div class="cell" onclick="handleHumanMove(6)"></div>
+        <div class="cell" onclick="handleHumanMove(7)"></div>
+        <div class="cell" onclick="handleHumanMove(8)"></div>
     </div>
 
-    <div class="controls">
-        <button class="btn" onclick="resetBoard()">Restart Level</button>
-        <button class="btn btn-primary" onclick="fullReset()">New Game</button>
-    </div>
+    <button class="main-btn" onclick="resetGame()">Next Round</button>
 
     <script>
+        // --- INITIAL STATE & LOCAL STORAGE ---
         let board = Array(9).fill("");
         let gameActive = true;
-        
-        // Storage Logic
-        let maxUnlockedLevel = parseInt(localStorage.getItem('max_lvl')) || 1;
-        let selectedLevel = maxUnlockedLevel;
-        let wins = parseInt(localStorage.getItem('biz_wins')) || 0;
-        let cpuWins = parseInt(localStorage.getItem('biz_losses')) || 0;
+        let currentPlayer = "X";
+        let currentLevel = parseInt(localStorage.getItem('ttt_level')) || 1;
+        let scoreX = parseInt(localStorage.getItem('ttt_scoreX')) || 0;
+        let scoreO = parseInt(localStorage.getItem('ttt_scoreO')) || 0;
+
+        document.getElementById("levelDisplay").innerText = currentLevel;
+        document.getElementById("scoreX").innerText = scoreX;
+        document.getElementById("scoreO").innerText = scoreO;
 
         const cells = document.querySelectorAll(".cell");
-        const statusTxt = document.getElementById("status");
+        const statusDisplay = document.getElementById("status");
+        const winPatterns = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 
-        function updateUI() {
-            document.getElementById("levelNum").innerText = selectedLevel;
-            document.getElementById("scoreX").innerText = wins;
-            document.getElementById("scoreO").innerText = cpuWins;
-            document.getElementById("xpBar").style.width = (selectedLevel / 100 * 100) + "%";
-            document.getElementById("diffPerc").innerText = selectedLevel + "%";
-            
-            // Disable nav buttons based on progress
-            document.getElementById("prevBtn").disabled = (selectedLevel <= 1);
-            document.getElementById("nextBtn").disabled = (selectedLevel >= maxUnlockedLevel);
+        // --- AUDIO ENGINE ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(freq, duration) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            osc.start(); osc.stop(audioCtx.currentTime + duration);
         }
 
-        function changeLevel(delta) {
-            let target = selectedLevel + delta;
-            if (target >= 1 && target <= maxUnlockedLevel) {
-                selectedLevel = target;
-                resetBoard();
-                updateUI();
-                statusTxt.innerText = "LEVEL " + selectedLevel + " LOADED";
+        // --- THEME ---
+        function toggleTheme() {
+            const theme = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', theme);
+            localStorage.setItem('ttt_theme', theme);
+        }
+
+        // --- GAMEPLAY ---
+        function handleHumanMove(index) {
+            if (board[index] !== "" || !gameActive) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            playSound(600, 0.1);
+            executeMove(index, "X");
+
+            if (gameActive) {
+                statusDisplay.innerText = "AI is thinking...";
+                setTimeout(computerMove, 600);
             }
         }
 
-        function handleMove(i) {
-            if (board[i] !== "" || !gameActive) return;
-            board[i] = "X";
-            cells[i].innerText = "X";
-            cells[i].classList.add("x");
+        function computerMove() {
+            if (!gameActive) return;
             
-            if (checkGameOver("X")) return;
-            
-            gameActive = false;
-            statusTxt.innerText = "CPU COMPUTING...";
-            setTimeout(cpuMove, 600);
-        }
+            // DIFFICULTY SCALING: Higher level = higher chance of using Minimax
+            const difficultyThreshold = currentLevel / 100;
+            let moveIndex;
 
-        function cpuMove() {
-            let move;
-            // The "Addictive" difficulty scaling
-            if (Math.random() < (selectedLevel / 100)) {
-                move = getBestMove(); 
+            if (Math.random() < difficultyThreshold) {
+                moveIndex = getBestMove(); // Smart move
             } else {
-                let avail = board.map((v, i) => v === "" ? i : null).filter(v => v !== null);
-                move = avail[Math.floor(Math.random() * avail.length)];
+                let available = board.map((v, i) => v === "" ? i : null).filter(v => v !== null);
+                moveIndex = available[Math.floor(Math.random() * available.length)]; // Random move
             }
 
-            if (move !== undefined) {
-                board[move] = "O";
-                cells[move].innerText = "O";
-                cells[move].classList.add("o");
-                if (!checkGameOver("O")) {
-                    gameActive = true;
-                    statusTxt.innerText = "YOUR TURN";
-                }
+            playSound(400, 0.1);
+            executeMove(moveIndex, "O");
+        }
+
+        function executeMove(index, player) {
+            board[index] = player;
+            cells[index].innerText = player;
+            cells[index].classList.add("pop");
+            checkWin(player);
+        }
+
+        function checkWin(player) {
+            let win = winPatterns.find(p => p.every(i => board[i] === player));
+            if (win) {
+                statusDisplay.innerText = player === "X" ? "You Won Level " + currentLevel + "!" : "AI Won!";
+                if (player === "X") levelUp();
+                else saveScore("O");
+                
+                win.forEach(i => cells[i].classList.add("win-anim"));
+                playSound(player === "X" ? 800 : 200, 0.5);
+                gameActive = false;
+            } else if (!board.includes("")) {
+                statusDisplay.innerText = "Draw! Try again.";
+                gameActive = false;
+            } else if (player === "O") {
+                statusDisplay.innerText = "Your Turn!";
             }
         }
 
-        function checkGameOver(p) {
-            const patterns = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-            let match = patterns.find(ptrn => ptrn.every(i => board[i] === p));
-            
-            if (match) {
-                if (p === "X") {
-                    statusTxt.innerText = "LEVEL COMPLETED!";
-                    if (selectedLevel === maxUnlockedLevel && maxUnlockedLevel < 100) {
-                        maxUnlockedLevel++;
-                        localStorage.setItem('max_lvl', maxUnlockedLevel);
-                    }
-                    wins++;
-                    localStorage.setItem('biz_wins', wins);
-                } else {
-                    statusTxt.innerText = "SYSTEM FAILURE!";
-                    cpuWins++;
-                    localStorage.setItem('biz_losses', cpuWins);
-                }
-                match.forEach(idx => cells[idx].classList.add("winner-cell"));
-                gameActive = false;
-                updateUI();
-                return true;
-            }
-            if (!board.includes("")) {
-                statusTxt.innerText = "DATA DRAW - REPLAY";
-                gameActive = false;
-                return true;
-            }
-            return false;
+        function levelUp() {
+            scoreX++;
+            if (currentLevel < 100) currentLevel++;
+            localStorage.setItem('ttt_level', currentLevel);
+            localStorage.setItem('ttt_scoreX', scoreX);
+            document.getElementById("levelDisplay").innerText = currentLevel;
+            document.getElementById("scoreX").innerText = scoreX;
         }
 
-        function resetBoard() {
+        function saveScore(player) {
+            scoreO++;
+            localStorage.setItem('ttt_scoreO', scoreO);
+            document.getElementById("scoreO").innerText = scoreO;
+        }
+
+        function resetGame() {
             board = Array(9).fill("");
             gameActive = true;
-            cells.forEach(c => { c.innerText = ""; c.className = "cell"; });
-            statusTxt.innerText = "READY PLAYER ONE";
-            updateUI();
+            statusDisplay.innerText = "Level " + currentLevel + ": Fight!";
+            cells.forEach(c => { c.innerText = ""; c.classList.remove("pop", "win-anim"); });
         }
 
-        function fullReset() {
-            if(confirm("Wipe all data and start from Level 1?")) {
-                localStorage.clear();
-                location.reload();
-            }
-        }
-
-        // --- AI BRAIN (MINIMAX) ---
+        // --- MINIMAX ALGORITHM (The "Brain") ---
         function getBestMove() {
             let bestScore = -Infinity;
             let move;
@@ -256,33 +185,54 @@
                     board[i] = "O";
                     let score = minimax(board, 0, false);
                     board[i] = "";
-                    if (score > bestScore) { bestScore = score; move = i; }
+                    if (score > bestScore) {
+                        bestScore = score;
+                        move = i;
+                    }
                 }
             }
             return move;
         }
 
-        function minimax(b, d, isMax) {
-            let res = evalB(b);
-            if (res !== null) return res;
-            if (isMax) {
-                let s = -Infinity;
-                for (let i=0; i<9; i++) { if(b[i]==="") { b[i]="O"; s=Math.max(s, minimax(b, d+1, false)); b[i]=""; } }
-                return s;
+        function minimax(currBoard, depth, isMaximizing) {
+            let result = evaluate(currBoard);
+            if (result !== null) return result;
+
+            if (isMaximizing) {
+                let bestScore = -Infinity;
+                for (let i = 0; i < 9; i++) {
+                    if (currBoard[i] === "") {
+                        currBoard[i] = "O";
+                        let score = minimax(currBoard, depth + 1, false);
+                        currBoard[i] = "";
+                        bestScore = Math.max(score, bestScore);
+                    }
+                }
+                return bestScore;
             } else {
-                let s = Infinity;
-                for (let i=0; i<9; i++) { if(b[i]==="") { b[i]="X"; s=Math.min(s, minimax(b, d+1, true)); b[i]=""; } }
-                return s;
+                let bestScore = Infinity;
+                for (let i = 0; i < 9; i++) {
+                    if (currBoard[i] === "") {
+                        currBoard[i] = "X";
+                        let score = minimax(currBoard, depth + 1, true);
+                        currBoard[i] = "";
+                        bestScore = Math.min(score, bestScore);
+                    }
+                }
+                return bestScore;
             }
         }
 
-        function evalB(b) {
-            const patterns = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-            for (let p of patterns) {
-                if (b[p[0]] && b[p[0]] === b[p[1]] && b[p[0]] === b[p[2]]) return b[p[0]] === "O" ? 10 : -10;
+        function evaluate(b) {
+            for (let p of winPatterns) {
+                if (b[p[0]] && b[p[0]] === b[p[1]] && b[p[0]] === b[p[2]]) {
+                    return b[p[0]] === "O" ? 10 : -10;
+                }
             }
             return b.includes("") ? null : 0;
         }
+
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('sw.js')); }
     </script>
 </body>
 </html>
