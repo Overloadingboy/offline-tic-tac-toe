@@ -13,6 +13,20 @@
     <link rel="canonical" href="https://overloadingboy.github.io/" />
 
     <link rel="stylesheet" href="style.css">
+    <!-- Add this in the <head> -->
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+
+<!-- Add this inside your .game-area, above the board -->
+<div class="mode-selector">
+    <button id="btnAI" class="action-btn active" onclick="setMode('ai')">VS AI</button>
+    <button id="btnPVP" class="action-btn" onclick="setMode('pvp')">MULTIPLAYER</button>
+</div>
+
+<div id="pvp-controls" style="display:none; margin: 10px 0;">
+    <p style="font-size: 0.8rem;">Your ID: <span id="my-id" style="color:var(--accent)">...</span></p>
+    <input type="text" id="peer-id-input" placeholder="Enter Friend's ID" class="custom-select" style="width:180px; height:30px; font-size:0.9rem;">
+    <button class="action-btn" onclick="connectToPeer()" style="padding:5px 10px;">CONNECT</button>
+</div>
 </head>
 <body>
 
