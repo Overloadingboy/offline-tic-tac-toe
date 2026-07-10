@@ -9,96 +9,107 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2021454167052270" crossorigin="anonymous"></script>
     
     <title>CyberTic Evolution | Level 1-100 Strategy Game</title>
-    <meta name="description" content="Master 100 levels of strategy. Featuring an unbeatable Minimax AI at Impossible Levels 90-100.">
+    <meta name="description" content="Master 100 levels of strategy in CyberTic Evolution. Play online multiplayer with friends or face our progressive AI, featuring an unbeatable Minimax algorithm at levels 90-100.">
     <link rel="canonical" href="https://overloadingboy.github.io/" />
 
     <link rel="stylesheet" href="style.css">
-    <!-- Add this in the <head> -->
-<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-
-<!-- Add this inside your .game-area, above the board -->
-<div class="mode-selector">
-    <button id="btnAI" class="action-btn active" onclick="setMode('ai')">VS AI</button>
-    <button id="btnPVP" class="action-btn" onclick="setMode('pvp')">MULTIPLAYER</button>
-</div>
-
-<div id="pvp-controls" style="display:none; margin: 10px 0;">
-    <p style="font-size: 0.8rem;">Your ID: <span id="my-id" style="color:var(--accent)">...</span></p>
-    <input type="text" id="peer-id-input" placeholder="Enter Friend's ID" class="custom-select" style="width:180px; height:30px; font-size:0.9rem;">
-    <button class="action-btn" onclick="connectToPeer()" style="padding:5px 10px;">CONNECT</button>
-</div>
+    
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 </head>
 <body>
 
 <nav>
     <a onclick="showPage('game')">CYBER PLAY</a>
-    <a onclick="showPage('guide')">HOW TO PLAY</a>
-    <a onclick="showPage('privacy')">PRIVACY & ADS</a>
-    <a onclick="showPage('about')">CONTACT</a>
+    <a onclick="showPage('guide')">STRATEGY GUIDE</a>
+    <a onclick="showPage('privacy')">PRIVACY POLICY</a>
+    <a onclick="showPage('about')">ABOUT & CONTACT</a>
 </nav>
 
 <div class="container">
     <div id="game" class="page active">
         <div class="game-area">
-            <div class="level-picker">
-                <span id="diffBadge" class="difficulty-badge">EASY</span>
-                <select id="levelSelect" class="custom-select" onchange="changeLevel(this.value)">
-                    </select>
+            
+            <div class="mode-selector" style="margin-bottom: 15px; text-align: center;">
+                <button id="btnAI" class="action-btn active" onclick="setMode('ai')" style="padding: 10px; margin-right: 5px; cursor: pointer;">VS AI</button>
+                <button id="btnPVP" class="action-btn" onclick="setMode('pvp')" style="padding: 10px; cursor: pointer;">MULTIPLAYER</button>
             </div>
-            <p id="status">System Ready.</p>
+
+            <div id="pvp-controls" style="display:none; margin: 15px 0; text-align: center; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
+                <p style="font-size: 0.9rem; margin-bottom: 5px;">Your ID: <strong id="my-id" style="color:var(--accent, #00ffcc)">Generating...</strong></p>
+                <input type="text" id="peer-id-input" placeholder="Enter Friend's ID" class="custom-select" style="width:180px; height:30px; font-size:0.9rem; margin-bottom: 5px;">
+                <button class="action-btn" onclick="connectToPeer()" style="padding:5px 15px; cursor: pointer;">CONNECT</button>
+            </div>
+
+            <div class="level-picker" id="levelPickerContainer">
+                <span id="diffBadge" class="difficulty-badge">EASY</span>
+                <select id="levelSelect" class="custom-select" onchange="changeLevel(this.value)"></select>
+            </div>
+            
+            <p id="status" style="text-align: center; font-weight: bold; margin-bottom: 10px;">System Ready.</p>
+            
             <div class="board" id="board">
                 <div class="cell" onclick="play(0)"></div><div class="cell" onclick="play(1)"></div><div class="cell" onclick="play(2)"></div>
                 <div class="cell" onclick="play(3)"></div><div class="cell" onclick="play(4)"></div><div class="cell" onclick="play(5)"></div>
                 <div class="cell" onclick="play(6)"></div><div class="cell" onclick="play(7)"></div><div class="cell" onclick="play(8)"></div>
             </div>
-            <button class="reset" onclick="resetBoard()">REBOOT BOARD</button>
+            
+            <button class="reset" onclick="handleResetClick()" style="display: block; margin: 20px auto; padding: 10px 20px; cursor: pointer;">REBOOT BOARD</button>
         </div>
     </div>
 
-    <div id="guide" class="page">
-        <h2>Strategic Protocols: How to Play</h2>
-        <p>CyberTic Evolution follows standard Tic Tac Toe rules but scales the AI difficulty across 100 levels.</p>
+    <div id="guide" class="page" style="display: none;">
+        <h2>Strategic Protocols: Comprehensive Game Guide</h2>
+        <p>Welcome to CyberTic Evolution, a next-generation approach to the classic game of Tic Tac Toe. While the foundational rules remain the same, our system introduces a progressive learning curve designed to test human logic against machine efficiency.</p>
+        
+        <h3>The Core Objective</h3>
+        <p>The goal is simple: align three of your symbols (X) in a contiguous line—horizontally, vertically, or diagonally—before the Artificial Intelligence (O) completes its own sequence.</p>
+        
+        <h3>The 100 Tiers of Artificial Intelligence</h3>
         <ul>
-            <li><strong>The Objective:</strong> Align three symbols (X) horizontally, vertically, or diagonally before the AI (O) does.</li>
-            <li><strong>Progressive Difficulty:</strong> As you clear levels, the AI's "Neural Logic" becomes more precise. </li>
-            <li><strong>Impossible Tiers:</strong> From level 90 onwards, the AI uses the <strong>Minimax Algorithm</strong>. In these levels, a draw is the best possible outcome for a human player.</li>
+            <li><strong>Levels 1-30 (Easy):</strong> The AI is prone to errors, often missing obvious blocks. Designed for beginners.</li>
+            <li><strong>Levels 31-60 (Normal):</strong> The AI begins recognizing immediate threats. It will actively attempt to block your horizontal and vertical alignments.</li>
+            <li><strong>Levels 61-89 (Difficult):</strong> At this stage, the AI prioritizes high-value board positions, such as the center tile and corners, significantly reducing human victory chances.</li>
+            <li><strong>Levels 90-100 (Impossible):</strong> The system activates the <strong>Minimax Algorithm</strong>. This recursive decision-making protocol from game theory simulates all possible future moves to ensure the AI never loses. A draw is your best outcome.</li>
         </ul>
-        <h3>Winning Strategies:</h3>
-        <p>Starting in the center offers the most defensive flexibility, while starting in a corner sets up the highest probability for a "Fork" (two winning paths at once).</p>
     </div>
 
-    <div id="privacy" class="page">
+    <div id="privacy" class="page" style="display: none;">
         <h2>Privacy Policy & Ad Disclosure</h2>
-        <p>This policy outlines how we handle data to remain compliant with Google AdSense and international privacy standards.</p>
-        <h3>Cookies and Advertisements</h3>
-        <p>We use Google AdSense to serve ads. Google may use cookies or web beacons to collect non-personal information (such as your IP address or browser type) to provide relevant advertisements based on your visits to this and other sites.</p>
-        <h3>Local Storage</h3>
-        <p>To provide a persistent gaming experience, your current level is saved in your browser's <code>localStorage</code>. This data remains on your machine and is never transmitted to our servers.</p>
+        <p>This policy details how CyberTic Evolution processes user data, ensuring full compliance with Google AdSense program policies.</p>
+        
+        <h3>Google AdSense and Cookies</h3>
+        <p>We use Google AdSense to display advertisements. Third-party vendors, including Google, use cookies to serve ads based on your prior visits to this website. Google's use of advertising cookies enables it and its partners to serve ads based on your browsing history.</p>
+        
+        <h3>Multiplayer and Local Storage</h3>
+        <p>Your current level progress is saved in your browser's local storage (<code>localStorage</code>). For online multiplayer, we use PeerJS to establish a direct WebRTC connection between you and your opponent. Game moves are transmitted directly peer-to-peer; we do not store chat logs or match history on any central servers.</p>
     </div>
 
-    <div id="about" class="page">
-        <h2>Contact Information</h2>
-        <p>CyberTic Evolution is an open-source logic project hosted on GitHub Pages.</p>
-        <p><strong>Developer:</strong> overloadingboy</p>
-        <p><strong>Support & Feedback:</strong> For bug reports or feature requests, please contact us at: <br>
-           <a href="mailto:overloadingboy@github.io" style="color: var(--accent);">overloadingboy@github.io</a></p>
-        <p>View the project source code on <a href="https://github.com/overloadingboy" target="_blank" style="color: var(--accent);">GitHub</a>.</p>
+    <div id="about" class="page" style="display: none;">
+        <h2>Developer & Contact Information</h2>
+        <p>CyberTic Evolution is an open-source logic project designed to demonstrate the implementation of artificial intelligence algorithms and Peer-to-Peer web technologies.</p>
+        <p><strong>Developed By:</strong> overloadingboy</p>
+        <p><strong>Technical Support:</strong> <a href="mailto:overloadingboy@github.io" style="color: var(--accent, #00ffcc);">overloadingboy@github.io</a></p>
     </div>
 </div>
 
-<footer>
+<footer style="text-align: center; margin-top: 20px; font-size: 0.8rem;">
     &copy; 2026 CyberTic Strategy Games. All Rights Reserved. | Hosted on GitHub Pages
 </footer>
 
 <script>
-    /* [JS remains identical to the previous version provided, 
-       just ensure you include the showPage() function to toggle the new IDs]
-    */
     let board = Array(9).fill("");
     let curLvl = parseInt(localStorage.getItem('cur_lvl')) || 1;
     let active = true;
+    let gameMode = 'ai'; 
     const cells = document.querySelectorAll('.cell');
 
+    // --- PEER JS MULTIPLAYER VARIABLES ---
+    let peer = null;
+    let conn = null;
+    let myRole = ''; // 'X' or 'O'
+    let isMyTurn = false;
+
+    // --- UI SETUP ---
     const selectEl = document.getElementById('levelSelect');
     const groups = {
         easy: document.createElement('optgroup'),
@@ -123,11 +134,98 @@
     }
 
     function showPage(id) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+        document.getElementById(id).style.display = 'block';
     }
 
+    // --- GAME MODE CONTROLLER ---
+    function setMode(mode) {
+        gameMode = mode;
+        document.getElementById('btnAI').classList.toggle('active', mode === 'ai');
+        document.getElementById('btnPVP').classList.toggle('active', mode === 'pvp');
+        
+        document.getElementById('levelPickerContainer').style.display = mode === 'ai' ? 'flex' : 'none';
+        document.getElementById('pvp-controls').style.display = mode === 'pvp' ? 'block' : 'none';
+        
+        resetBoardLocal();
+
+        if (mode === 'pvp') {
+            if (!peer) initPeer();
+            document.getElementById('status').innerText = conn ? "Connected! Play when ready." : "Share your ID or Connect to a friend.";
+        } else {
+            updateUI();
+        }
+    }
+
+    // --- PEER JS NETWORKING LOGIC ---
+    function initPeer() {
+        peer = new Peer(); // Connects to PeerJS free cloud servers
+        
+        peer.on('open', (id) => {
+            document.getElementById('my-id').innerText = id;
+        });
+
+        // When a friend connects to US
+        peer.on('connection', (connection) => {
+            conn = connection;
+            setupConnection();
+            myRole = 'O'; // Host becomes O, friend who connected is X
+            isMyTurn = false;
+            document.getElementById('status').innerText = "Friend Connected! They are X and play first.";
+            resetBoardLocal();
+        });
+    }
+
+    function connectToPeer() {
+        const friendId = document.getElementById('peer-id-input').value.trim();
+        if (!friendId) return alert("Please enter a friend's ID.");
+        
+        document.getElementById('status').innerText = "Connecting...";
+        conn = peer.connect(friendId);
+        
+        conn.on('open', () => {
+            setupConnection();
+            myRole = 'X'; // The person who clicks connect gets to be X
+            isMyTurn = true;
+            document.getElementById('status').innerText = "Connected! You are X. Your turn!";
+            conn.send({ type: 'start' }); // Tell host we are ready
+            resetBoardLocal();
+        });
+    }
+
+    function setupConnection() {
+        conn.on('data', (data) => {
+            if (data.type === 'move') {
+                // Friend made a move
+                let i = data.index;
+                let enemyRole = myRole === 'X' ? 'O' : 'X';
+                board[i] = enemyRole;
+                cells[i].innerText = enemyRole;
+                cells[i].classList.add(enemyRole.toLowerCase());
+                
+                if (!checkWin(enemyRole)) {
+                    isMyTurn = true;
+                    document.getElementById('status').innerText = `Your turn (${myRole}).`;
+                }
+            } else if (data.type === 'reset') {
+                resetBoardLocal();
+            } else if (data.type === 'start') {
+                resetBoardLocal();
+                myRole = 'O';
+                isMyTurn = false;
+                document.getElementById('status').innerText = "Friend Connected! They (X) play first.";
+            }
+        });
+
+        conn.on('close', () => {
+            document.getElementById('status').innerText = "Connection lost.";
+            conn = null;
+        });
+    }
+
+    // --- AI UI LOGIC ---
     function updateUI() {
+        if (gameMode !== 'ai') return;
         selectEl.value = curLvl;
         localStorage.setItem('cur_lvl', curLvl);
         const badge = document.getElementById('diffBadge');
@@ -140,32 +238,64 @@
     }
     updateUI();
 
-    function changeLevel(newLevel) { curLvl = parseInt(newLevel); resetBoard(); updateUI(); }
+    function changeLevel(newLevel) { curLvl = parseInt(newLevel); resetBoardLocal(); updateUI(); }
 
+    // --- GAMEPLAY LOGIC ---
     function play(i) {
         if (board[i] !== "" || !active) return;
-        board[i] = "X"; cells[i].innerText = "X"; cells[i].classList.add("x");
-        if (checkWin("X")) return;
-        active = false;
-        document.getElementById('status').innerText = "AI calculating...";
-        setTimeout(cpuPlay, 600);
+        
+        if (gameMode === 'ai') {
+            board[i] = "X"; cells[i].innerText = "X"; cells[i].classList.add("x");
+            if (checkWin("X")) return;
+            active = false;
+            document.getElementById('status').innerText = "AI calculating...";
+            setTimeout(cpuPlay, 600);
+        } else if (gameMode === 'pvp') {
+            if (!conn) return alert("Connect to a friend first!");
+            if (!isMyTurn) return alert("It is not your turn!");
+            
+            // Register player's move
+            board[i] = myRole;
+            cells[i].innerText = myRole;
+            cells[i].classList.add(myRole.toLowerCase());
+            isMyTurn = false;
+            document.getElementById('status').innerText = "Waiting for friend...";
+            
+            // Send move to friend
+            conn.send({ type: 'move', index: i });
+            checkWin(myRole);
+        }
     }
 
+    // --- AI LOGIC (Levels 1-100) ---
     function cpuPlay() {
         let move;
         let avail = board.map((v, i) => v === "" ? i : null).filter(v => v !== null);
-        if (curLvl >= 90) { move = getBestMoveMinimax(); }
-        else {
-            let aiStrictness = curLvl / 90;
-            if (Math.random() < aiStrictness) {
+        
+        if (curLvl >= 90) { 
+            move = getBestMoveMinimax(); 
+        } else {
+            let smartChance = 0.30 + ((curLvl / 90) * 0.60); 
+            if (Math.random() < smartChance) {
                 move = findWinningMove("O") || findWinningMove("X");
+                if ((move === undefined || move === -1) && curLvl > 30 && board[4] === "") move = 4;
+                if ((move === undefined || move === -1) && curLvl > 50) {
+                    let corners = [0, 2, 6, 8].filter(idx => board[idx] === "");
+                    if (corners.length > 0) move = corners[Math.floor(Math.random() * corners.length)];
+                }
                 if (move === undefined || move === -1) move = avail[Math.floor(Math.random() * avail.length)];
-            } else { move = avail[Math.floor(Math.random() * avail.length)]; }
+            } else { 
+                move = avail[Math.floor(Math.random() * avail.length)]; 
+            }
         }
-        if (move !== undefined) { board[move] = "O"; cells[move].innerText = "O"; cells[move].classList.add("o"); }
+        
+        if (move !== undefined) { 
+            board[move] = "O"; cells[move].innerText = "O"; cells[move].classList.add("o"); 
+        }
         if (!checkWin("O")) { active = true; document.getElementById('status').innerText = "Your turn."; }
     }
 
+    // AI Minimax Algorithm
     function getBestMoveMinimax() {
         let bestScore = -Infinity; let move;
         for (let i = 0; i < 9; i++) {
@@ -217,24 +347,46 @@
 
     function checkWin(p) {
         if (checkTerminalWin(p)) {
-            document.getElementById('status').innerText = p === "X" ? "LEVEL CLEAR!" : "AI DOMINANCE ESTABLISHED.";
-            active = false;
-            if (p === "X" && curLvl < 100) { curLvl++; }
-            setTimeout(() => { resetBoard(); updateUI(); }, 1500);
+            if (gameMode === 'ai') {
+                document.getElementById('status').innerText = p === "X" ? "LEVEL CLEAR!" : "AI DOMINANCE ESTABLISHED.";
+                if (p === "X" && curLvl < 100) curLvl++;
+                active = false;
+                setTimeout(() => { resetBoardLocal(); updateUI(); }, 1500);
+            } else {
+                document.getElementById('status').innerText = p === myRole ? "YOU WON!" : "ENEMY WON!";
+                active = false;
+            }
             return true;
         }
         if (!board.includes("")) {
             document.getElementById('status').innerText = "DRAW DETECTED.";
             active = false;
-            setTimeout(() => { resetBoard(); updateUI(); }, 1500);
+            if (gameMode === 'ai') setTimeout(() => { resetBoardLocal(); updateUI(); }, 1500);
             return true;
         }
         return false;
     }
 
-    function resetBoard() {
-        board = Array(9).fill(""); active = true;
+    // --- RESET LOGIC ---
+    function handleResetClick() {
+        resetBoardLocal();
+        if (gameMode === 'pvp' && conn) {
+            conn.send({ type: 'reset' }); // Tell friend to clear their board too
+        } else if (gameMode === 'ai') {
+            updateUI();
+        }
+    }
+
+    function resetBoardLocal() {
+        board = Array(9).fill(""); 
+        active = true;
         cells.forEach(c => { c.innerText = ""; c.className = "cell"; });
+        
+        if (gameMode === 'pvp' && conn) {
+            // X always goes first when a new game starts
+            isMyTurn = (myRole === 'X'); 
+            document.getElementById('status').innerText = isMyTurn ? "Your turn (X)." : "Friend's turn (O)...";
+        }
     }
 </script>
 </body>
